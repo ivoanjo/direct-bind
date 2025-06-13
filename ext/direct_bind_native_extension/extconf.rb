@@ -33,6 +33,7 @@ end
 require "mkmf"
 
 append_cflags("-std=gnu99")
+append_cflags("-Wno-declaration-after-statement")
 append_cflags("-Werror-implicit-function-declaration")
 append_cflags("-Wunused-parameter")
 append_cflags("-Wold-style-definition")

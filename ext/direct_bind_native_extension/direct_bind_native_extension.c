@@ -34,7 +34,7 @@ void Init_direct_bind_native_extension(void) {
   rb_define_singleton_method(direct_bind_module, "call", direct_bind_call, 3);
 }
 
-VALUE direct_bind_call(VALUE _self, VALUE klass, VALUE method, VALUE instance) {
+VALUE direct_bind_call(__attribute__((unused)) VALUE _self, VALUE klass, VALUE method, VALUE instance) {
   direct_bind_cfunc_result result = direct_bind_get_cfunc(klass, SYM2ID(method), true);
   if (result.arity != 0) rb_raise(rb_eArgError, "Unexpected arity on cfunc: %d", result.arity);
   return result.func(instance);

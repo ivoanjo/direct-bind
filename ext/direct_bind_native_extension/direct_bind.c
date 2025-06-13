@@ -30,14 +30,21 @@
 #define SELF_TEST_TARGET "direct_bind_self_test_target"
 #define SELF_TEST_ARITY 3
 
-static VALUE self_test_target_func(VALUE, VALUE, VALUE, VALUE) { return Qnil; }
+static VALUE self_test_target_func(
+  __attribute__((unused)) VALUE _1,
+  __attribute__((unused)) VALUE _2,
+  __attribute__((unused)) VALUE _3,
+  __attribute__((unused)) VALUE _4
+) {
+  return Qnil;
+}
 
 bool direct_bind_self_test(bool raise_on_failure) {
   VALUE anonymous_module = rb_module_new();
   rb_define_method(anonymous_module, SELF_TEST_TARGET, self_test_target_func, SELF_TEST_ARITY);
 
-  direct_bind_cfunc_result test_target =
-    direct_bind_get_cfunc(anonymous_module, rb_intern(SELF_TEST_TARGET), raise_on_failure);
+  ID self_test_id = rb_intern(SELF_TEST_TARGET);
+  direct_bind_cfunc_result test_target = direct_bind_get_cfunc(anonymous_module, self_test_id, raise_on_failure);
 
   if (!test_target.ok) return false;
 
