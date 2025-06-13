@@ -27,7 +27,6 @@
 
 // # Self-test implementation
 
-#define SELF_TEST_TARGET "direct_bind_self_test_target"
 #define SELF_TEST_ARITY 3
 
 static VALUE self_test_target_func(
@@ -41,9 +40,9 @@ static VALUE self_test_target_func(
 
 bool direct_bind_self_test(bool raise_on_failure) {
   VALUE anonymous_module = rb_module_new();
-  rb_define_method(anonymous_module, SELF_TEST_TARGET, self_test_target_func, SELF_TEST_ARITY);
+  rb_define_method(anonymous_module, "direct_bind_self_test_target", self_test_target_func, SELF_TEST_ARITY);
 
-  ID self_test_id = rb_intern(SELF_TEST_TARGET);
+  ID self_test_id = rb_intern("direct_bind_self_test_target");
   direct_bind_cfunc_result test_target = direct_bind_get_cfunc(anonymous_module, self_test_id, raise_on_failure);
 
   if (!test_target.ok) return false;
