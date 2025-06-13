@@ -5,7 +5,7 @@
 
 typedef struct {
   bool ok;
-  const char *failure_reason;
+  VALUE failure_reason;
   int arity;
   VALUE (*func)(ANYARGS);
 } direct_bind_cfunc_result;
