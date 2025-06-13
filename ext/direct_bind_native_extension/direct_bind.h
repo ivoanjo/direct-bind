@@ -26,7 +26,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <ruby/internal/method.h>
+#include <ruby.h>
 
 typedef struct {
   bool ok;

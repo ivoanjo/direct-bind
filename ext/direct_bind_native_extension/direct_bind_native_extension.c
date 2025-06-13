@@ -23,8 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <ruby/ruby.h>
-
 #include "direct_bind.h"
 
 VALUE direct_bind_call(VALUE _self, VALUE klass, VALUE method, VALUE instance);

@@ -21,7 +21,7 @@ RSpec.describe "gem release process (after packaging)" do
         Gem::Package::TarReader.new(Zlib::GzipReader.new(StringIO.new(data.read))) do |data_tar|
           data_tar.each do |entry|
             filename = entry.header.name.split("/").last
-            octal_permissions = entry.header.mode.to_s(8)[-3..]
+            octal_permissions = entry.header.mode.to_s(8)[-3..-1]
 
             expected_permissions = "644"
 

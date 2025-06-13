@@ -26,14 +26,14 @@
 # frozen_string_literal: true
 
 require "bundler/gem_tasks"
-require "standard/rake"
+require "standard/rake" if RUBY_VERSION >= "3.0"
 require "rake/extensiontask"
 require "rspec/core/rake_task"
 
 Rake::ExtensionTask.new("direct_bind_native_extension")
 RSpec::Core::RakeTask.new(:spec)
 
-task default: [:compile, :"standard:fix", :spec]
+task default: [:compile, (:"standard:fix" if RUBY_VERSION >= "3.0"), :spec].compact
 
 Rake::Task["build"].enhance { Rake::Task["spec_validate_permissions"].execute }
 

@@ -25,8 +25,6 @@
 
 #include "direct_bind.h"
 
-#include <ruby.h>
-
 // # Self-test implementation
 
 #define SELF_TEST_TARGET "direct_bind_self_test_target"
