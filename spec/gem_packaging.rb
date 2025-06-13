@@ -4,7 +4,7 @@ require "rubygems"
 require "rubygems/package"
 require "rubygems/package/tar_reader"
 require "zlib"
-require "direct-bind"
+require "direct_bind/version"
 
 RSpec.describe "gem release process (after packaging)" do
   let(:gem_version) { DirectBind::VERSION }
