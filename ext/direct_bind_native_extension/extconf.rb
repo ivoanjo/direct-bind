@@ -34,6 +34,7 @@ require "mkmf"
 
 append_cflags("-std=gnu99")
 append_cflags("-Wno-declaration-after-statement")
+append_cflags("-Wno-compound-token-split-by-macro")
 append_cflags("-Werror-implicit-function-declaration")
 append_cflags("-Wunused-parameter")
 append_cflags("-Wold-style-definition")
