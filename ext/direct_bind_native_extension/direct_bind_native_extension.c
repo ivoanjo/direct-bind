@@ -28,9 +28,11 @@
 VALUE direct_bind_call(VALUE _self, VALUE klass, VALUE method, VALUE instance);
 
 void Init_direct_bind_native_extension(void) {
-  direct_bind_self_test(true);
-
   VALUE direct_bind_module = rb_define_module("DirectBind");
+  VALUE extension_version_module = rb_define_module_under(direct_bind_module, "ExtensionVersion");
+
+  direct_bind_initialize(extension_version_module, true);
+
   rb_define_singleton_method(direct_bind_module, "call", direct_bind_call, 3);
 }
 

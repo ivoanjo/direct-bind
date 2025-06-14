@@ -25,6 +25,20 @@
 
 #include "direct_bind.h"
 
+static bool direct_bind_self_test(bool raise_on_failure);
+
+// # Initialization and version management
+
+bool direct_bind_initialize(VALUE publish_version_under, bool raise_on_failure) {
+  if (!direct_bind_self_test(raise_on_failure)) return false;
+
+  if (publish_version_under != Qnil) {
+    rb_define_const(rb_define_module_under(publish_version_under, "DirectBind"), "VERSION", rb_str_new_lit(DIRECT_BIND_VERSION));
+  }
+
+  return true;
+}
+
 // # Self-test implementation
 
 #define SELF_TEST_ARITY 3
@@ -38,7 +52,7 @@ static VALUE self_test_target_func(
   return Qnil;
 }
 
-bool direct_bind_self_test(bool raise_on_failure) {
+static bool direct_bind_self_test(bool raise_on_failure) {
   VALUE anonymous_module = rb_module_new();
   rb_define_method(anonymous_module, "direct_bind_self_test_target", self_test_target_func, SELF_TEST_ARITY);
 

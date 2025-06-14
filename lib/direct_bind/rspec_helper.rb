@@ -25,7 +25,14 @@
 
 # frozen_string_literal: true
 
+require "rspec/expectations"
+
 module DirectBind
-  # Must be kept in sync with the VERSION in `direct_bind.h` (and there's a test for it)
-  VERSION = "0.2.0.dev"
+  module RSpecHelper
+    self.class.include RSpec::Matchers
+
+    def self.expect_direct_bind_version_to_be_up_to_date_in(native_extension_module)
+      expect(native_extension_module::DirectBind::VERSION).to eq ::DirectBind::VERSION
+    end
+  end
 end

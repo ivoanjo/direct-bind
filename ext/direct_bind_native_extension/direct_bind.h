@@ -28,6 +28,8 @@
 #include <stdbool.h>
 #include <ruby.h>
 
+#define DIRECT_BIND_VERSION "0.2.0.dev"
+
 typedef struct {
   bool ok;
   VALUE failure_reason;
@@ -35,8 +37,9 @@ typedef struct {
   VALUE (*func)(ANYARGS);
 } direct_bind_cfunc_result;
 
-// Recommended to call once during your gem's initialization, to validate that direct-bind's Ruby hacking is in good shape.
-bool direct_bind_self_test(bool raise_on_failure);
+// Recommended to call once during your gem's initialization, to validate that direct-bind's Ruby hacking is in good shape and
+// to make it easy to (optionally) validate what version you're using
+bool direct_bind_initialize(VALUE publish_version_under, bool raise_on_failure);
 
 // Provides the reverse of `rb_define_method`: Given a class and a method_name, retrieves the arity and func previously
 // passed to `rb_define_method`.
