@@ -28,10 +28,39 @@
 require "direct-bind"
 
 RSpec.describe DirectBind do
-  it "can direct bind Thread#name" do
-    t = Thread.new {}
-    t.name = "this is a test"
+  let(:test_thread) { Thread.new {}.tap { |it| it.name = "test_thread" } }
 
-    expect(subject.call(Thread, :name, t)).to eq "this is a test"
+  it "can direct bind Thread#name" do
+    expect(subject.call(Thread, :name, test_thread)).to eq "test_thread"
+  end
+
+  context "when method is monkey patched" do
+    before do
+      class ::Thread # standard:disable Lint/ConstantDefinitionInBlock
+        def name
+          "monkey_patched!"
+        end
+      end
+
+      GC.start # Make sure any older definition is collected
+    end
+
+    it "can no longer direct bind to Thread#name" do
+      expect { subject.call(Thread, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/)
+    end
+  end
+
+  context "when method is undefined" do
+    before do
+      class ::Thread # standard:disable Lint/ConstantDefinitionInBlock
+        undef_method :name
+      end
+
+      GC.start # Make sure any older definition is collected
+    end
+
+    it "can no longer direct bind to Thread#name" do
+      expect { subject.call(Thread, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/)
+    end
   end
 end
