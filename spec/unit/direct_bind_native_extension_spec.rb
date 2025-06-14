@@ -63,4 +63,10 @@ RSpec.describe DirectBind do
       expect { subject.call(Thread, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/)
     end
   end
+
+  context "when method does not exist" do
+    it "can no longer direct bind to Thread#name" do
+      expect { subject.call(Thread, :does_not_exist, test_thread) }.to raise_error(RuntimeError, /not found/)
+    end
+  end
 end
