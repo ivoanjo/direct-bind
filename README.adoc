@@ -51,7 +51,7 @@ is_thread_alive(rb_thread_current());
 
 1. Add `direct-bind` as a **development** dependency
 2. Use the built-in rake task to vendor the `direct-bind` sources into your own extension by adding to your `Rakefile`:
-
++
 [source,ruby]
 ----
 require "direct_bind/rake"
@@ -63,7 +63,7 @@ task default: [:"direct-bind:install", :compile]
 ----
 
 3. Use `direct-bind` in your native extension:
-
++
 [source,c]
 ----
 #include "direct-bind.h"
@@ -82,7 +82,7 @@ void Init_your_extension(void) {
 ----
 
 4. Use the RSpec helper in your tests to make sure the vendoring is working correctly:
-
++
 [source,ruby]
 ----
 require "direct_bind/rspec_helper"
@@ -92,6 +92,8 @@ it "uses the correct direct-bind gem version" do
   DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(YourExtension) # Same module/class as used in `direct_bind_initialize`
 end
 ----
+
+5. `git add` the new `direct-bind.h` and `direct-bind.c` files that showed up in your extension folder
 
 == Installation
 
