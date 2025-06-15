@@ -1,3 +1,5 @@
+name: Push gem to RubyGems.org
+
 on: workflow_dispatch
 
 concurrency: publish
