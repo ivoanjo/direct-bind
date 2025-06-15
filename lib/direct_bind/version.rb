@@ -26,6 +26,6 @@
 # frozen_string_literal: true
 
 module DirectBind
-  # Must be kept in sync with the VERSION in `direct_bind.h` (and there's a test for it)
-  VERSION = "0.2.0.dev"
+  # Must be kept in sync with the VERSION in `dist/direct-bind.h` (and there's a test for it)
+  VERSION = "1.0.0.beta1"
 end
