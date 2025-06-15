@@ -29,45 +29,42 @@ require "direct-bind"
 require "direct_bind_testing_extension"
 
 RSpec.describe DirectBindTesting do
+  let(:cloned_thread_class) { Thread.dup }
   let(:test_thread) { Thread.new {}.tap { |it| it.name = "test_thread" } }
 
-  it "can direct bind Thread#name" do
-    expect(subject.call(Thread, :name, test_thread)).to eq "test_thread"
-  end
+  describe "method binding" do
+    it "can direct bind Thread#name" do
+      expect(subject.call(cloned_thread_class, :name, test_thread)).to eq "test_thread"
+    end
 
-  context "when method is monkey patched" do
-    before do
-      class ::Thread # standard:disable Lint/ConstantDefinitionInBlock
-        def name
-          "monkey_patched!"
+    context "when method is monkey patched" do
+      before do
+        cloned_thread_class.class_eval do
+          def name
+            "monkey_patched!"
+          end
         end
+
+        GC.start # Make sure any older definition is collected
       end
 
-      GC.start # Make sure any older definition is collected
+      it { expect { subject.call(cloned_thread_class, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/) }
     end
 
-    it "can no longer direct bind to Thread#name" do
-      expect { subject.call(Thread, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/)
-    end
-  end
+    context "when method is undefined" do
+      before do
+        cloned_thread_class.class_eval do
+          undef_method :name
+        end
 
-  context "when method is undefined" do
-    before do
-      class ::Thread # standard:disable Lint/ConstantDefinitionInBlock
-        undef_method :name
+        GC.start # Make sure any older definition is collected
       end
 
-      GC.start # Make sure any older definition is collected
+      it { expect { subject.call(cloned_thread_class, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/) }
     end
 
-    it "can no longer direct bind to Thread#name" do
-      expect { subject.call(Thread, :name, test_thread) }.to raise_error(RuntimeError, /method_entry is not a cfunc/)
-    end
-  end
-
-  context "when method does not exist" do
-    it "can no longer direct bind to Thread#name" do
-      expect { subject.call(Thread, :does_not_exist, test_thread) }.to raise_error(RuntimeError, /not found/)
+    context "when method does not exist" do
+      it { expect { subject.call(cloned_thread_class, :does_not_exist, test_thread) }.to raise_error(RuntimeError, /not found/) }
     end
   end
 end
