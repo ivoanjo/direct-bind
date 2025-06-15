@@ -56,3 +56,6 @@ bool direct_bind_initialize(VALUE publish_version_under, bool raise_on_failure);
 // Performance note: As of this writing, this method scans objspace to find the definition of the method, so you
 // most probably want to cache its result, rather than calling it very often.
 direct_bind_cfunc_result direct_bind_get_cfunc(VALUE klass, ID method_name, bool raise_on_failure);
+
+// Same as above, but automatically fails if arity isn't the expected value
+direct_bind_cfunc_result direct_bind_get_cfunc_with_arity(VALUE klass, ID method_name, int arity, bool raise_on_failure);

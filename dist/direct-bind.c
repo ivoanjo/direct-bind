@@ -59,11 +59,9 @@ static bool direct_bind_self_test(bool raise_on_failure) {
   rb_define_method(anonymous_module, "direct_bind_self_test_target", self_test_target_func, SELF_TEST_ARITY);
 
   ID self_test_id = rb_intern("direct_bind_self_test_target");
-  direct_bind_cfunc_result test_target = direct_bind_get_cfunc(anonymous_module, self_test_id, raise_on_failure);
+  direct_bind_cfunc_result test_target = direct_bind_get_cfunc_with_arity(anonymous_module, self_test_id, SELF_TEST_ARITY, raise_on_failure);
 
-  if (!test_target.ok) return false;
-
-  return test_target.arity == SELF_TEST_ARITY && test_target.func == self_test_target_func;
+  return test_target.ok && test_target.func == self_test_target_func;
 }
 
 // # Structure layouts and exported symbol definitions from Ruby
@@ -115,6 +113,19 @@ direct_bind_cfunc_result direct_bind_get_cfunc(VALUE klass, ID method_name, bool
   }
 
   return find_data.result;
+}
+
+direct_bind_cfunc_result direct_bind_get_cfunc_with_arity(VALUE klass, ID method_name, int arity, bool raise_on_failure) {
+  direct_bind_cfunc_result result = direct_bind_get_cfunc(klass, method_name, raise_on_failure);
+
+  if (result.ok && result.arity != arity) {
+    VALUE unexpected_arity = rb_sprintf("method %"PRIsVALUE".%"PRIsVALUE" unexpected arity %d, expected %d", klass, ID2SYM(method_name), result.arity, arity);
+
+    if (raise_on_failure) rb_raise(rb_eRuntimeError, "direct_bind_get_cfunc_with_arity failed: %"PRIsVALUE, unexpected_arity);
+    else result = (direct_bind_cfunc_result) {.ok = false, .failure_reason = unexpected_arity};
+  }
+
+  return result;
 }
 
 // TODO: Maybe change this to use safe memory reads that can never segv (e.g. if structure layouts are off?)

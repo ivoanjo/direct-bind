@@ -67,4 +67,18 @@ RSpec.describe DirectBindTesting do
       it { expect { subject.call(cloned_thread_class, :does_not_exist, test_thread) }.to raise_error(RuntimeError, /not found/) }
     end
   end
+
+  describe "arity validation" do
+    let(:arity) { 0 }
+
+    it "validates arity of retrieved function" do
+      expect(subject.test_arity(cloned_thread_class, :name, arity)).to be true
+    end
+
+    context "when arity is unexpected" do
+      let(:arity) { 1 }
+
+      it { expect { subject.test_arity(cloned_thread_class, :name, arity) }.to raise_error(RuntimeError, /unexpected arity/) }
+    end
+  end
 end
