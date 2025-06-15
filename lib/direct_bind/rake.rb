@@ -39,10 +39,19 @@ module DirectBind
 
         desc "Install direct_bind files into extension"
         task(:"direct-bind:install") do
-          DIRECT_BIND_SOURCES.each do |source_file|
-            FileUtils.cp(File.join(DIRECT_BIND_SOURCES_PATH, source_file), target_extension_path)
+          DIRECT_BIND_SOURCES.each do |file_name|
+            from_path = File.join(DIRECT_BIND_SOURCES_PATH, file_name)
+            to_path = File.join(target_extension_path, file_name)
+
+            FileUtils.cp(from_path, to_path) unless already_up_to_date?(from_path, to_path)
           end
         end
+      end
+
+      private
+
+      def already_up_to_date?(file1, file2) # Order doesn't really matter here
+        File.exist?(file1) && File.exist?(file2) && FileUtils.compare_file(file1, file2)
       end
     end
   end
