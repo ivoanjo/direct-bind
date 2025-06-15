@@ -4,10 +4,94 @@
 :toclevels: 4
 :toc-title:
 
-A ruby gem for getting direct access to function pointers. (TODO)
+A ruby gem for getting direct access to cfunc method function pointers.
+
+In one sentence: it retrieves function pointers that got passed in to `rb_define_method`.
+
+E.g. consider this call:
+
+[source,c]
+----
+VALUE my_method(VALUE self) { /* ... */ }
+
+void define_function(VALUE klass) {
+  rb_define_method(klass, "my_method", my_method, 0);
+}
+----
+
+`direct-bind` allows you to retrieve the `my_method` pointer again:
+
+[source,c]
+----
+void call_function_directly(VALUE klass, VALUE instance) {
+  direct_bind_cfunc_result result = direct_bind_get_cfunc_with_arity(klass, rb_intern("my_method"), 0, true);
+
+  // At this point result.func == my_method, and you can call it without dispatching through the VM
+  result.func(instance);
+}
+----
+
+Why? Its main use-case is on very low-level Ruby tools.
+Often Ruby VM APIs are not exposed as public functions but we would like to call them without dispatching through the VM. `direct-bind` enables such use-cases.
+
+One example is finding out if a given thread is alive:
+
+[source,c]
+----
+VALUE (*is_thread_alive)(VALUE thread);
+is_thread_alive = direct_bind_get_cfunc_with_arity(rb_cThread, rb_intern("alive?"), 0, true).func;
+is_thread_alive(rb_thread_current());
+----
 
 == Quickest start
 
+**Looking for a realistic example?** `direct-bind` was integrated into `gvl-tracing` https://github.com/ivoanjo/gvl-tracing/commit/4a20c2f2f1b8cb1f481e498b98075a4e4e5ee267[in this commit] which provides a full example and use-case on how to use it.
+
+`direct-bind` is intended to be vendored by other gems, not used directly. Here's what you need to do to integrate `direct-bind` into your project:
+
+1. Add `direct-bind` as a **development** dependency
+2. Use the built-in rake task to vendor the `direct-bind` sources into your own extension by adding to your `Rakefile`:
+
+[source,ruby]
+----
+require "direct_bind/rake"
+
+DirectBind::Rake::InstallTask.new("your_extension_name") # This should be the same as you set up in `Rake::ExtensionTask.new`
+
+# Extecute the install task by e.g. adding it before your compile step
+task default: [:"direct-bind:install", :compile]
+----
+
+3. Use `direct-bind` in your native extension:
+
+[source,c]
+----
+#include "direct-bind.h"
+
+// Example: Directly bind access to Thread#alive?
+static VALUE (*is_thread_alive)(VALUE thread);
+
+void Init_your_extension(void) {
+  VALUE your_extension_module = rb_define_module("YourExtension");
+
+  direct_bind_initialize(your_extension_module, true);
+  is_thread_alive = direct_bind_get_cfunc_with_arity(rb_cThread, rb_intern("alive?"), 0, true).func;
+
+  // Function is ready to be called!
+}
+----
+
+4. Use the RSpec helper in your tests to make sure the vendoring is working correctly:
+
+[source,ruby]
+----
+require "direct_bind/rspec_helper"
+
+# Add this test-case
+it "uses the correct direct-bind gem version" do
+  DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(YourExtension) # Same module/class as used in `direct_bind_initialize`
+end
+----
 
 == Installation
 
@@ -31,13 +115,7 @@ Use `require "direct-bind"` to load the gem.
 
 == Requirements
 
-TODO
-
-== Development
-
-To use the gem locally, remember to run `bundle exec rake compile` to build the native code before you can use it. Afterwards, you can run the examples directly from the tree by running `bundle exec ruby [some example]`.
-
-When adding new files to `ext/direct_bind_native_extension` you need to run `bundle exec rake clean compile`. This will ensure the new files get picked up and compiled correctly.
+`direct-bind` has been tested on Ruby 2.5+. It can probably run on older Rubies too, but I have no use-case for it. PRs to extend support for older Rubies (and what's your use-case) are welcome :)
 
 === Installation and deployment
 
