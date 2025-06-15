@@ -27,5 +27,5 @@
 
 module DirectBind
   # Must be kept in sync with the VERSION in `dist/direct-bind.h` (and there's a test for it)
-  VERSION = "1.0.0"
+  VERSION = "1.1.0.dev"
 end
