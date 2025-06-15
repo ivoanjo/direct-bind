@@ -46,6 +46,5 @@ Gem::Specification.new do |spec|
         [".editorconfig", ".ruby-version", ".standard.yml", "gems.rb", "Rakefile"].include?(f)
     end
   end
-  spec.require_paths = ["lib", "ext"]
-  spec.extensions = ["ext/direct_bind_native_extension/extconf.rb"]
+  spec.require_paths = ["lib"]
 end

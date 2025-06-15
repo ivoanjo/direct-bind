@@ -25,16 +25,23 @@
 
 # frozen_string_literal: true
 
-require 'rake'
-require 'rake/tasklib'
+require "rake"
+require "rake/tasklib"
 
 module DirectBind
   module Rake
-    class InstallTask < Rake::TaskLib
+    class InstallTask < ::Rake::TaskLib
+      DIRECT_BIND_SOURCES = ["direct-bind.h", "direct-bind.c"]
+      DIRECT_BIND_SOURCES_PATH = File.join(Gem.loaded_specs["direct-bind"].full_gem_path, "dist")
+
       def initialize(extension_name)
+        target_extension_path = File.join(Dir.pwd, "ext", extension_name)
+
         desc "Install direct_bind files into extension"
         task(:"direct-bind:install") do
-          puts "hello, world!"
+          DIRECT_BIND_SOURCES.each do |source_file|
+            FileUtils.cp(File.join(DIRECT_BIND_SOURCES_PATH, source_file), target_extension_path)
+          end
         end
       end
     end

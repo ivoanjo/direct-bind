@@ -26,8 +26,9 @@
 # frozen_string_literal: true
 
 require "direct-bind"
+require "direct_bind_testing_extension"
 
-RSpec.describe DirectBind do
+RSpec.describe DirectBindTesting do
   let(:test_thread) { Thread.new {}.tap { |it| it.name = "test_thread" } }
 
   it "can direct bind Thread#name" do

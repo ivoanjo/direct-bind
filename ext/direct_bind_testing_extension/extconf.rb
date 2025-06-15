@@ -43,4 +43,4 @@ append_cflags("-Wextra")
 append_cflags("-Werror") if ENV["ENABLE_WERROR"] == "true"
 
 create_header
-create_makefile "direct_bind_native_extension"
+create_makefile "direct_bind_testing_extension"

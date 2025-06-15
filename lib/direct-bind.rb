@@ -27,7 +27,5 @@
 
 require_relative "direct_bind/version"
 
-require "direct_bind_native_extension"
-
 module DirectBind
 end

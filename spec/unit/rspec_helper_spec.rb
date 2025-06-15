@@ -26,23 +26,24 @@
 # frozen_string_literal: true
 
 require "direct-bind"
+require "direct_bind_testing_extension"
 require "direct_bind/rspec_helper"
 
 RSpec.describe DirectBind::RSpecHelper do
   context "when native extension is using the latest direct-bind version" do
     it do
       expect {
-        DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(DirectBind::ExtensionVersion)
+        DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(DirectBindTesting)
       }.to_not raise_error
     end
   end
 
   context "when native extension is not using the latest direct-bind version" do
-    before { stub_const("DirectBind::ExtensionVersion::DirectBind::VERSION", "incorrect_version") }
+    before { stub_const("DirectBindTesting::DirectBind::VERSION", "incorrect_version") }
 
     it do
       expect {
-        DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(DirectBind::ExtensionVersion)
+        DirectBind::RSpecHelper.expect_direct_bind_version_to_be_up_to_date_in(DirectBindTesting)
       }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end

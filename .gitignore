@@ -15,3 +15,5 @@ example*json
 .rspec_status
 bin/
 .cursor/
+ext/direct_bind_testing_extension/direct-bind.c
+ext/direct_bind_testing_extension/direct-bind.h
