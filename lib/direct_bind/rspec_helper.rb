@@ -25,6 +25,7 @@
 
 # frozen_string_literal: true
 
+require "direct-bind"
 require "rspec/expectations"
 
 module DirectBind
