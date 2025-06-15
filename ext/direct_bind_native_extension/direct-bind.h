@@ -23,6 +23,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// The recommended way to consume the direct-bind gem is to always vendor it.
+// That is, use its rake task to automatically copy direct-bind.h and direct-bind.c into another gem's native extension
+// sources folder. (P.s.: There's also a test helper to make sure copying is working fine and the gem is up-to-date.)
+//
+// This makes the actual Ruby direct-bind gem only a development dependency, simplifying distribution for the gem
+// that uses it.
+//
+// For more details, check the direct-bind gem's documentation.
+
 #pragma once
 
 #include <stdbool.h>

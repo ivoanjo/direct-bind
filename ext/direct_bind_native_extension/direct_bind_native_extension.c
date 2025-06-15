@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "direct_bind.h"
+#include "direct-bind.h"
 
 VALUE direct_bind_call(VALUE _self, VALUE klass, VALUE method, VALUE instance);
 

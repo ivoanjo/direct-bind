@@ -23,7 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "direct_bind.h"
+// See direct-bind.h for details on using direct-bind and why you may be finding this file vendored inside another gem.
+
+#include "direct-bind.h"
 
 static bool direct_bind_self_test(bool raise_on_failure);
 
